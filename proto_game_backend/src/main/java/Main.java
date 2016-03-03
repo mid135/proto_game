@@ -3,9 +3,12 @@
  */
 import backend.AccountService;
 import backend.Accounting.AccountServiceImpl;
+import backend.Mechanics.GameMechanics;
 import backend.Mechanics.MyWebSocketHandler;
 import frontend.AccountServlets.Auth;
 import frontend.AccountServlets.Registration;
+import frontend.WebSocketGameServlet;
+import frontend.WebSocketService;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -25,6 +28,11 @@ public class Main {
         server.setHandler(context);
         context.addServlet(new ServletHolder(auth), "/auth");
         context.addServlet(new ServletHolder(register),"/register");
+
+        WebSocketService webSocketService = new WebSocketService();
+        GameMechanics gameMechanics = new GameMechanics(webSocketService,pool);
+        context.addServlet(new ServletHolder(new WebSocketGameServlet(pool, gameMechanics, webSocketService)), "/gameplay");
+
         server.setHandler(context);
         server.start();
         server.join();
