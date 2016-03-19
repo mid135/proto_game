@@ -33,6 +33,8 @@ public class Registration extends HttpServlet {
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {//обработчик кнопки отлогинивания
         response.setContentType("text/html;charset=utf-8");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
         JSONObject json = new JSONObject();
         User user = new UserImpl(request.getParameter("login"),request.getParameter("password"));
         try {

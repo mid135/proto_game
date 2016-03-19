@@ -26,6 +26,9 @@ public class Auth extends HttpServlet  {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=utf-8");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
+
         JSONObject json = new JSONObject();
         String login = request.getParameter("login");
         String password = request.getParameter("password");

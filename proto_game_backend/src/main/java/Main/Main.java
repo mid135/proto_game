@@ -23,7 +23,7 @@ public class Main {
         Auth auth = new Auth(pool);
         Registration register = new Registration(pool);
 
-        Server server = new Server(10000);
+        Server server = new Server(9000);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         server.setHandler(context);
         context.addServlet(new ServletHolder(auth), "/auth");
