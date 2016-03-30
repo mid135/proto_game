@@ -27,8 +27,8 @@ public class CustomWebSocketCreator implements WebSocketCreator {
         String name;
         try {
             name = authService.getArraySessionId().get(sessionId).getLogin();
-        } catch (Exception e) {
-            return null;
+        } catch (Exception e) {//иначе аноним
+            name = "anonymus";
         }
         return new GameWebSocket(name, gameMechanics, webSocketService);
     }

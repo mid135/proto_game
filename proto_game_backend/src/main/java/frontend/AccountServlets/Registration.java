@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by moskaluk on 24.02.2016. сервлет регистрации
@@ -33,21 +31,23 @@ public class Registration extends HttpServlet {
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) throws ServletException, IOException {//обработчик кнопки отлогинивания
         response.setContentType("text/html;charset=utf-8");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
         JSONObject json = new JSONObject();
-        User user = new UserImpl(request.getParameter("login"),request.getParameter("password"));
+        User user = new UserImpl(request.getParameter("login"), request.getParameter("password"));
         try {
             if (pool.checkRegistration(user.getLogin()) == AccountEnum.UserRegistered) {
                 json.put("status", "0");
-                json.put("message","userExist");
+                json.put("message", "user a;ready exists");
                 response.setStatus(HttpServletResponse.SC_CONFLICT);
             } else {
                 if (pool.register(user) == AccountEnum.RegisterSuccess) {
                     json.put("status", "1");
-                    json.put("message","success");
+                    json.put("message", "success");
                     response.setStatus(HttpServletResponse.SC_OK);
                 } else {
                     json.put("status", "0");
-                    json.put("message","userExist");
+                    json.put("message", "unexpected fail");
                     response.setStatus(HttpServletResponse.SC_CONFLICT);
                 }
             }
