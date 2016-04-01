@@ -1,20 +1,21 @@
 package Main; /**
  * Created by moskaluk on 20.02.2016. main file
  */
+
 import backend.AccountService;
 import backend.Accounting.AccountServiceImpl;
 import backend.Mechanics.GameMechanics;
-import backend.Mechanics.MyWebSocketHandler;
 import frontend.AccountServlets.Auth;
 import frontend.AccountServlets.LogOut;
 import frontend.AccountServlets.Registration;
 import frontend.WebSocketGameServlet;
 import frontend.WebSocketService;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.websocket.server.WebSocketHandler;
-import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -36,7 +37,14 @@ public class Main {
         GameMechanics gameMechanics = new GameMechanics(webSocketService,pool);
         context.addServlet(new ServletHolder(new WebSocketGameServlet(pool, gameMechanics, webSocketService)), "/gameplay");
 
-        server.setHandler(context);
+        ResourceHandler resource_handler = new ResourceHandler();
+        resource_handler.setDirectoriesListed(true);
+        resource_handler.setResourceBase("C:\\Users\\moskaluk\\idea_projects\\proto_game\\proto_game_backend\\public_html");
+        HandlerList handlers = new HandlerList();
+        handlers.setHandlers(new Handler[]{resource_handler, context});
+
+        server.setHandler(handlers);
+
         server.start();
         server.join();
     }

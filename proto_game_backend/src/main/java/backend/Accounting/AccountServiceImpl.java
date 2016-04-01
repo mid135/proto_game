@@ -67,7 +67,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public AccountEnum register(User user) {
-        if (users.containsKey(user.getLogin())) {
+            if (users.containsKey(user.getLogin())) {
             return AccountEnum.UserAlreadyExists;
         } else {
             users.put(user.getLogin(), user);
