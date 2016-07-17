@@ -8,6 +8,7 @@ import backend.Accounting.AccountEnum;
 
 public interface AccountService {
     Map<String, User> getArraySessionId();
+    Map<String, User> getUsers();
     AccountEnum logIn(String login, String password, HttpServletRequest request);
     AccountEnum logOut (HttpServletRequest request) ;
     AccountEnum checkRegistration(String userName) ;

@@ -37,9 +37,10 @@ public class Main {
         GameMechanics gameMechanics = new GameMechanics(webSocketService,pool);
         context.addServlet(new ServletHolder(new WebSocketGameServlet(pool, gameMechanics, webSocketService)), "/gameplay");
 
+
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
-        resource_handler.setResourceBase("C:\\Users\\moskaluk\\idea_projects\\proto_game\\proto_game_backend\\public_html");
+        resource_handler.setResourceBase("/home/mid-s/java project/proto_game_front");
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[]{resource_handler, context});
 

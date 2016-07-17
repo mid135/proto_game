@@ -2,6 +2,7 @@ package frontend;
 
 import backend.AccountService;
 import backend.Mechanics.GameMechanics;
+import backend.User;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
@@ -24,12 +25,12 @@ public class CustomWebSocketCreator implements WebSocketCreator {
 
     public Object createWebSocket(ServletUpgradeRequest req, ServletUpgradeResponse resp) {
         String sessionId = req.getHttpServletRequest().getSession().getId();
-        String name;
+        User user;
         try {
-            name = authService.getArraySessionId().get(sessionId).getLogin();
-        } catch (Exception e) {//иначе аноним
-            name = "anonymus";
+            user = authService.getArraySessionId().get(sessionId);
+        } catch (Exception e) {
+            return null;//никаких анонимов
         }
-        return new GameWebSocket(name, gameMechanics, webSocketService);
+        return new GameWebSocket(user, gameMechanics, webSocketService, authService);
     }
 }

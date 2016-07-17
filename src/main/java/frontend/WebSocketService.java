@@ -4,29 +4,44 @@ package frontend;
  * Created by moskaluk on 03.03.2016.
  */
 
+import backend.Mechanics.GameRoom;
 import backend.Mechanics.GameUser;
+import backend.User;
 import org.json.JSONException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class WebSocketService {
-    private Map<String, GameWebSocket> userSockets = new HashMap<String, GameWebSocket>();
+    private Map<User, GameWebSocket> userSockets = new HashMap<>();
+
+    public Map<User, GameWebSocket> getUserSockets() {
+        return userSockets;
+    }
+
+    //имя комнаты сопадает с логином создателя
+    public Map<String, GameRoom> getGameRooms() {
+        return gameRooms;
+    }
+
+    private Map<String, GameRoom> gameRooms = new HashMap<>();
 
     public void addUser(GameWebSocket user) {
+        this.userSockets.put(user.getUser(),user);
     }
 
-    public void notifyNewState(GameUser user1, GameUser user2) throws JSONException{
-
+    public void createRoom(User user) {
+        if (user != null && gameRooms.get(user.getLogin()) == null) {
+            gameRooms.put(user.getLogin(),new GameRoom(userSockets.get(user), null));
+        }
     }
 
-    public void notifyStartGame(GameUser user) throws JSONException{
-        GameWebSocket gameWebSocket = userSockets.get(user.getMyName());
-        gameWebSocket.startGame(user);
+    public void joinRoom(User roomCreator, User user) {
+
+        if (gameRooms.get(roomCreator.getLogin()) != null) {
+            gameRooms.get(roomCreator.getLogin()).setUser2(userSockets.get(user));
+        }
+        gameRooms.get(roomCreator.getLogin()).start();
     }
 
-
-    public void notifyGameOver(GameUser user) {
-        userSockets.get(user.getMyName()).gameOver( user.getMyName(), user.getScore(), user.getEnemy().getMyName(), user.getEnemy().getScore());
-    }
 }

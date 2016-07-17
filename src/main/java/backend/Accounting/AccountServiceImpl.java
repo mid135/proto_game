@@ -12,6 +12,11 @@ import java.util.Map;
  */
 public class AccountServiceImpl implements AccountService {
     private Map<String, User> arraySessionId = new HashMap<String, User>();//все сессии пользователей - sessionId/UserImplMemory
+
+    public Map<String, User> getUsers() {
+        return users;
+    }
+
     private Map<String, User> users = new HashMap<String, User>();//все зарегистрированые юзеры - логин/UserImplMemory
 
     public Map<String, User> getArraySessionId() {

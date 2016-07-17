@@ -1,6 +1,7 @@
 package backend.Mechanics;
 
 import backend.AccountService;
+import backend.User;
 import frontend.WebSocketService;
 import org.json.JSONException;
 
@@ -13,11 +14,11 @@ public class GameMechanics {
 
     }
 
-    public void addUser(String user) throws JSONException {
+    public void addUser(User user) throws JSONException {
 
     }
 
-    public void changePosition(String userName,Integer delta) throws JSONException{
+    public void changePosition(User userName, Integer delta) throws JSONException{
 
     }
 
