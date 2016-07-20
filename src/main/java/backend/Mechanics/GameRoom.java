@@ -4,12 +4,22 @@ import backend.User;
 import frontend.GameWebSocket;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by mid-s on 15.07.16.
  */
 public class GameRoom {
     GameWebSocket user1;
     GameWebSocket user2;
+
+    public List<GameWebSocket> getUsers() {
+        ArrayList<GameWebSocket> res = new ArrayList<>();
+        res.add(user1);
+        res.add(user2);
+        return res;
+    }
 
     public void start() {
         if (user1 != null && user2 != null && user1 != user2) {

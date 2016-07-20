@@ -14,6 +14,7 @@ import java.util.Map;
 
 public class WebSocketService {
     private Map<User, GameWebSocket> userSockets = new HashMap<>();
+    private Map<String, GameRoom> gameRooms = new HashMap<>();
 
     public Map<User, GameWebSocket> getUserSockets() {
         return userSockets;
@@ -24,15 +25,13 @@ public class WebSocketService {
         return gameRooms;
     }
 
-    private Map<String, GameRoom> gameRooms = new HashMap<>();
-
     public void addUser(GameWebSocket user) {
-        this.userSockets.put(user.getUser(),user);
+        this.userSockets.put(user.getUser(), user);
     }
 
     public void createRoom(User user) {
         if (user != null && gameRooms.get(user.getLogin()) == null) {
-            gameRooms.put(user.getLogin(),new GameRoom(userSockets.get(user), null));
+            gameRooms.put(user.getLogin(), new GameRoom(userSockets.get(user), null));
         }
     }
 
@@ -42,6 +41,13 @@ public class WebSocketService {
             gameRooms.get(roomCreator.getLogin()).setUser2(userSockets.get(user));
         }
         gameRooms.get(roomCreator.getLogin()).start();
+    }
+
+    public void notifyStartGame(String roomName) {
+        GameRoom room = gameRooms.get(roomName);
+        for (GameWebSocket user : room.getUsers()) {
+
+        }
     }
 
 }

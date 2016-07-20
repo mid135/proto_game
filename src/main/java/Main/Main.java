@@ -47,6 +47,7 @@ public class Main {
         server.setHandler(handlers);
 
         server.start();
+        gameMechanics.run();
         server.join();
     }
 }

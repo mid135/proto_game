@@ -116,11 +116,21 @@ public class GameWebSocket {
         }
     }
 
+    public void sendNewState () {
+        try {
+            JSONObject jsonStart = new JSONObject();
+            jsonStart.put("stub", "stub");
+            session.getRemote().sendString(jsonStart.toString());
+        } catch (Exception e) {
+            System.out.print(e.toString());
+        }
+    }
+
     @OnWebSocketConnect
     public void onOpen(Session session) throws JSONException {
         setSession(session);
         webSocketService.addUser(this);
-        gameMechanics.addUser(user);
+        //gameMechanics.addUser(user);
     }
 
     public void setState(GameUser user) throws JSONException {
