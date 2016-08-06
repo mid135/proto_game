@@ -5,11 +5,12 @@ package Main; /**
 import backend.AccountService;
 import backend.Accounting.AccountServiceImpl;
 import backend.Mechanics.GameMechanics;
+import backend.Mechanics.RoomMechanics;
 import frontend.AccountServlets.Auth;
 import frontend.AccountServlets.LogOut;
 import frontend.AccountServlets.Registration;
 import frontend.WebSocketGameServlet;
-import frontend.WebSocketService;
+import frontend.WebSocketService.WebSocketGameService;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -30,12 +31,16 @@ public class Main {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         server.setHandler(context);
         context.addServlet(new ServletHolder(auth), "/auth");
-        context.addServlet(new ServletHolder(register),"/register");
-        context.addServlet(new ServletHolder(logOut),"/logout");
+        context.addServlet(new ServletHolder(register), "/register");
+        context.addServlet(new ServletHolder(logOut), "/logout");
 
-        WebSocketService webSocketService = new WebSocketService();
-        GameMechanics gameMechanics = new GameMechanics(webSocketService,pool);
-        context.addServlet(new ServletHolder(new WebSocketGameServlet(pool, gameMechanics, webSocketService)), "/gameplay");
+        WebSocketGameService webSocketGameService = new WebSocketGameService();
+
+        GameMechanics gameMechanics = new GameMechanics(webSocketGameService, pool);
+        RoomMechanics roomMechanics = new RoomMechanics(webSocketGameService, pool);
+
+        context.addServlet(new ServletHolder(new WebSocketGameServlet(pool, gameMechanics, webSocketGameService)), "/gameplay");
+        context.addServlet(new ServletHolder(new WebSocketGameServlet(pool, roomMechanics, webSocketGameService)), "/rooms");
 
 
         ResourceHandler resource_handler = new ResourceHandler();
@@ -47,7 +52,11 @@ public class Main {
         server.setHandler(handlers);
 
         server.start();
-        gameMechanics.run();
+        Thread gameMechanicsThread = new Thread(gameMechanics);
+        gameMechanicsThread.start();
+        Thread romMechanicsThread = new Thread(roomMechanics);
+        gameMechanics.start();
+        roomMechanics.start();
         server.join();
     }
 }

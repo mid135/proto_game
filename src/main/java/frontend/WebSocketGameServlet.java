@@ -2,7 +2,7 @@ package frontend;
 
 
 import backend.AccountService;
-import backend.Mechanics.GameMechanics;
+import frontend.WebSocketService.WebSocketGameService;
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
@@ -15,20 +15,20 @@ import javax.servlet.annotation.WebServlet;
 public class WebSocketGameServlet extends WebSocketServlet {
     private final static int IDLE_TIME = 60 * 1000;//60 sec
     private AccountService accountService;
-    private GameMechanics gameMechanics;
-    private WebSocketService webSocketService;
+    private Thread mechanics;
+    private WebSocketGameService webSocketGameService;
 
     public WebSocketGameServlet(AccountService authService,
-                                GameMechanics gameMechanics,
-                                WebSocketService webSocketService) {
+                                Thread mechanics,
+                                WebSocketGameService webSocketGameService) {
         this.accountService = authService;
-        this.gameMechanics = gameMechanics;
-        this.webSocketService = webSocketService;
+        this.mechanics = mechanics;
+        this.webSocketGameService = webSocketGameService;
     }
 
     @Override
     public void configure(WebSocketServletFactory factory) {
         factory.getPolicy().setIdleTimeout(IDLE_TIME);
-        factory.setCreator(new CustomWebSocketCreator(accountService, gameMechanics, webSocketService));
+        factory.setCreator(new CustomWebSocketCreator(accountService, mechanics, webSocketGameService));
     }
 }

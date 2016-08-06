@@ -3,8 +3,8 @@ package backend.Mechanics;
 import Utils.TimeHelper;
 import backend.AccountService;
 import backend.User;
-import frontend.GameWebSocket;
-import frontend.WebSocketService;
+import frontend.WebSocketServlets.GameWebSocket;
+import frontend.WebSocketService.WebSocketGameService;
 import org.json.JSONException;
 
 import java.util.Map;
@@ -13,18 +13,19 @@ import java.util.Map;
  * Created by moskaluk on 03.03.2016.
  */
 //TODO выделить интерфейс
-public class GameMechanics {
+public class GameMechanics extends Thread {
 
     private static final int STEP_TIME = 50;
-    WebSocketService webSocketService;
+    WebSocketGameService webSocketGameService;
     AccountService accountService;
 
-    public GameMechanics(WebSocketService webSocketService, AccountService p) {
-        this.webSocketService = webSocketService;
+    public GameMechanics(WebSocketGameService webSocketGameService, AccountService p) {
+        this.webSocketGameService = webSocketGameService;
         this.accountService = p;
     }
 
-    public void run() throws JSONException {
+    @Override
+    public void run() {
         while (true) {
             gmStep();
             TimeHelper.sleep(STEP_TIME);
@@ -35,22 +36,18 @@ public class GameMechanics {
 
     }
 
-    private void gmStep() throws JSONException {
-        for (Map.Entry<String, GameRoom> entry : webSocketService.getGameRooms().entrySet()) {
-            System.out.println("step");
+    private void gmStep() {
+        for (Map.Entry<String, GameRoom> entry : webSocketGameService.getGameRooms().entrySet()) {
             for (GameWebSocket user : entry.getValue().getUsers()) {
-                if (user != null) {notifyNewState(user);}
+                if (user != null) {
+                    try {
+                        notifyNewState(user);
+                    } catch (Exception e) {
+
+                    }
+                }
             }
         }
-
-    }
-
-    private void startGame(String roomName) throws JSONException {
-        webSocketService.notifyStartGame(roomName);
-    }
-
-    private void notifyNewState(GameWebSocket user) throws JSONException {
-        user.sendNewState();
     }
 
 
