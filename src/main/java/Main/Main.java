@@ -2,6 +2,7 @@ package Main; /**
  * Created by moskaluk on 20.02.2016. main file
  */
 
+import Utils.IdSingleton;
 import backend.AccountService;
 import backend.Accounting.AccountServiceImpl;
 import backend.Mechanics.GameMechanics;
@@ -11,6 +12,7 @@ import frontend.AccountServlets.LogOut;
 import frontend.AccountServlets.Registration;
 import frontend.WebSocketGameServlet;
 import frontend.WebSocketService.WebSocketGameService;
+import frontend.WebSocketService.WebSocketRoomService;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -35,13 +37,13 @@ public class Main {
         context.addServlet(new ServletHolder(logOut), "/logout");
 
         WebSocketGameService webSocketGameService = new WebSocketGameService();
+        WebSocketRoomService webSocketRoomService = new WebSocketRoomService();
 
         GameMechanics gameMechanics = new GameMechanics(webSocketGameService, pool);
-        RoomMechanics roomMechanics = new RoomMechanics(webSocketGameService, pool);
+        RoomMechanics roomMechanics = new RoomMechanics(webSocketRoomService, pool);
 
         context.addServlet(new ServletHolder(new WebSocketGameServlet(pool, gameMechanics, webSocketGameService)), "/gameplay");
-        context.addServlet(new ServletHolder(new WebSocketGameServlet(pool, roomMechanics, webSocketGameService)), "/rooms");
-
+        context.addServlet(new ServletHolder(new WebSocketGameServlet(pool, roomMechanics, webSocketRoomService)), "/rooms");
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);

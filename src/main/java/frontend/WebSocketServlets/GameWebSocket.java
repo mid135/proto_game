@@ -1,9 +1,11 @@
 package frontend.WebSocketServlets;
 
+import Utils.IdSingleton;
 import backend.AccountService;
 import backend.Mechanics.GameMechanics;
 import backend.User;
 import frontend.WebSocketService.WebSocketGameService;
+import frontend.WebSocketService.WebSocketService;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -19,6 +21,7 @@ import org.json.simple.parser.ParseException;
  */
 @WebSocket
 public class GameWebSocket {
+    private Integer id;
     private User user;
     private Session session;
     private GameMechanics gameMechanics;
@@ -26,11 +29,12 @@ public class GameWebSocket {
     private AccountService accountService;
 
     public GameWebSocket(User user, Thread gameMechanics,
-                         WebSocketGameService webSocketGameService, AccountService accountService) {
+                         WebSocketService webSocketService, AccountService accountService) {
         this.user = user;
         this.gameMechanics = (GameMechanics) gameMechanics;
-        this.webSocketGameService = webSocketGameService;
+        this.webSocketGameService = (WebSocketGameService) webSocketService;
         this.accountService = accountService;
+        this.id = IdSingleton.getNewId();
     }
 
     public User getUser() {

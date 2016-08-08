@@ -1,10 +1,12 @@
 package frontend.WebSocketServlets;
 
+import Utils.IdSingleton;
 import backend.AccountService;
 import backend.Mechanics.RoomMechanics;
 import backend.User;
 import frontend.WebSocketService.WebSocketGameService;
 import frontend.WebSocketService.WebSocketRoomService;
+import frontend.WebSocketService.WebSocketService;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -15,22 +17,27 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.IOException;
+
 /**
  * Created by mid-s on 03.08.16.
  */
 @WebSocket
 public class RoomWebSocket {
+    private Integer id;
     private User user;
     private Session session;
     private RoomMechanics roomMechanics;
     private WebSocketRoomService webSocketRoomService;
     private AccountService accountService;
+
     public RoomWebSocket(User user, Thread roomMechanics,
-                         WebSocketRoomService webSocketRoomService, AccountService accountService) {
+                         WebSocketService webSocketService, AccountService accountService) {
         this.user = user;
         this.roomMechanics = (RoomMechanics) roomMechanics;
-        this.webSocketRoomService = webSocketRoomService;
+        this.webSocketRoomService = (WebSocketRoomService) webSocketService;
         this.accountService = accountService;
+        this.id = IdSingleton.getNewId();
     }
 
     @OnWebSocketMessage
@@ -41,11 +48,19 @@ public class RoomWebSocket {
             inputJSON = (JSONObject) parser.parse(data.toString());
 
         } catch (ParseException e) {
+            //TODO parse error
         }
-        try {
-            //todo process room message - create delete join quit start
-        } catch (Exception e) {
 
+        if (inputJSON.get("action").equals("create")) {
+            webSocketRoomService.createRoom(user);
+        } else if (inputJSON.get("action").equals("delete")) {
+            webSocketRoomService.deleteRoom(Integer.valueOf(inputJSON.get("roomId").toString()));
+        } else if (inputJSON.get("action").equals("join")) {
+            webSocketRoomService.joinRoom(user, Integer.valueOf(inputJSON.get("roomId").toString()));
+        } else if (inputJSON.get("action").equals("quit")) {
+            webSocketRoomService.quitRoom(user, Integer.valueOf(inputJSON.get("roomId").toString()));
+        } else {
+            //TODO log fail action
         }
 
     }
@@ -54,12 +69,22 @@ public class RoomWebSocket {
     public void onOpen(Session session) throws JSONException {
         setSession(session);
         webSocketRoomService.addUser(this);
-        //gameMechanics.addUser(user);
     }
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
+        //TODO quit all rooms
+        
+        //TODO remove from service
+    }
 
+    public void sendMessage(String message) {
+        try {
+            this.session.getRemote().sendString(message);
+        } catch (Exception e) {
+            //TODO pring connection error
+            System.out.print(message + e.toString());
+        }
     }
 
     public void setSession(Session session) {

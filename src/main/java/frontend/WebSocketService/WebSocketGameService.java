@@ -12,11 +12,11 @@ import frontend.WebSocketServlets.RoomWebSocket;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class WebSocketGameService {
+public class WebSocketGameService implements WebSocketService {
     private Map<User, GameWebSocket> userSockets = new ConcurrentHashMap<>();
     private Map<String, GameRoom> gameRooms = new ConcurrentHashMap<>();
 
-    public Map<User, GameWebSocket> getUserSockets() {
+    public Map<User, GameWebSocket> getSockets() {
         return userSockets;
     }
 
@@ -35,10 +35,10 @@ public class WebSocketGameService {
 
 
     public void startGame(String roomName) {
-        GameRoom room = gameRooms.get(roomName);
-        for (GameWebSocket user : room.getUsers()) {
-            //todo start game
-        }
+//        GameRoom room = gameRooms.get(roomName);
+//        for (GameWebSocket user : room.getUsers()) {
+//            //todo start game
+//        }
     }
 
 }

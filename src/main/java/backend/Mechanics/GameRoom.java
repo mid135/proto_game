@@ -2,6 +2,7 @@ package backend.Mechanics;
 
 import backend.User;
 import frontend.WebSocketServlets.GameWebSocket;
+import frontend.WebSocketServlets.RoomWebSocket;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -11,27 +12,29 @@ import java.util.List;
  * Created by mid-s on 15.07.16.
  */
 public class GameRoom {
-    List<GameWebSocket> gameUserList = new ArrayList<>();
+    List<User> gameUserList = new ArrayList<>();
+    private Integer roomId;
 
-    public List<GameWebSocket> getUsers() {
+    public List<User> getUsers() {
         return gameUserList;
     }
 
-    public void start() {
-
+    public Integer getRoomId() {
+        return roomId;
     }
 
-    public String toJsonString() {
+    public JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();
         Integer i = 0;
-        for (GameWebSocket user: gameUserList) {
-            jsonObject.put(user.getUser().getLogin(), user.getUser());
+        for (User user: gameUserList) {
+            jsonObject.put(user.getLogin(), user.toJson());
             i++;
         }
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
-    public GameRoom(List<GameWebSocket> gameUserList) {
+    public GameRoom(List<User> gameUserList, Integer roomId) {
+        this.roomId = roomId;
         this.gameUserList = gameUserList;
 
     }

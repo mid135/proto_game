@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Created by moskaluk on 24.02.2016.
  */
+//TODO add unique Id
 public class UserImpl implements User {
     private String login;
     private String password;
@@ -70,5 +71,12 @@ public class UserImpl implements User {
         } else {
             return false;
         }
+    }
+
+    public JSONObject toJson() {
+        JSONObject resp = new JSONObject();
+        resp.put("name", this.getLogin());
+        resp.put("email", this.getEmail());
+        return resp;
     }
 }

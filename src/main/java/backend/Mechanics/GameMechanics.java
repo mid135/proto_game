@@ -38,15 +38,7 @@ public class GameMechanics extends Thread {
 
     private void gmStep() {
         for (Map.Entry<String, GameRoom> entry : webSocketGameService.getGameRooms().entrySet()) {
-            for (GameWebSocket user : entry.getValue().getUsers()) {
-                if (user != null) {
-                    try {
-                        notifyNewState(user);
-                    } catch (Exception e) {
 
-                    }
-                }
-            }
         }
     }
 

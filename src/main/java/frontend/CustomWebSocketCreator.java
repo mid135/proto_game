@@ -4,6 +4,7 @@ import backend.AccountService;
 import backend.Mechanics.GameMechanics;
 import backend.Mechanics.RoomMechanics;
 import backend.User;
+import frontend.WebSocketService.WebSocketService;
 import frontend.WebSocketServlets.GameWebSocket;
 import frontend.WebSocketServlets.RoomWebSocket;
 import frontend.WebSocketService.WebSocketGameService;
@@ -17,14 +18,14 @@ import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
 public class CustomWebSocketCreator implements WebSocketCreator {
     private AccountService authService;
     private Thread mechanics;
-    private WebSocketGameService webSocketGameService;
+    private WebSocketService webSocketService;
 
     public CustomWebSocketCreator(AccountService authService,
                                   Thread mechanics,
-                                  WebSocketGameService webSocketGameService) {
+                                  WebSocketService webSocketService) {
         this.authService = authService;
         this.mechanics = mechanics;
-        this.webSocketGameService = webSocketGameService;
+        this.webSocketService = webSocketService;
     }
 
     public Object createWebSocket(ServletUpgradeRequest req, ServletUpgradeResponse resp) {
@@ -37,10 +38,10 @@ public class CustomWebSocketCreator implements WebSocketCreator {
         }
         if (mechanics instanceof GameMechanics) {
             System.out.print("game_socket");
-            return new GameWebSocket(user, mechanics, webSocketGameService, authService);
+            return new GameWebSocket(user, mechanics, webSocketService, authService);
         } else if (mechanics instanceof RoomMechanics) {
             System.out.print("room_socket");
-            return new RoomWebSocket(user, mechanics, webSocketGameService, authService);
+            return new RoomWebSocket(user, mechanics, webSocketService, authService);
         }
         return null;
     }
