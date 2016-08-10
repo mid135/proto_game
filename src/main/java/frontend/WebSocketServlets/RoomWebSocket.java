@@ -53,8 +53,6 @@ public class RoomWebSocket {
 
         if (inputJSON.get("action").equals("create")) {
             webSocketRoomService.createRoom(user);
-        } else if (inputJSON.get("action").equals("delete")) {
-            webSocketRoomService.deleteRoom(Integer.valueOf(inputJSON.get("roomId").toString()));
         } else if (inputJSON.get("action").equals("join")) {
             webSocketRoomService.joinRoom(user, Integer.valueOf(inputJSON.get("roomId").toString()));
         } else if (inputJSON.get("action").equals("quit")) {
@@ -73,9 +71,11 @@ public class RoomWebSocket {
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
-        //TODO quit all rooms
-        
-        //TODO remove from service
+        this.webSocketRoomService.deleteUser(user);
+        if (user.getRoomId() != null) {
+            this.webSocketRoomService.getGameRooms().get(user.getRoomId()).getUsers().remove(user);
+            this.user.setRoomId(null);
+        }
     }
 
     public void sendMessage(String message) {
@@ -87,6 +87,13 @@ public class RoomWebSocket {
         }
     }
 
+    public void notifyRoomDeleted() {
+
+    }
+
+    public void notyfyRoomCreationFailed() {
+
+    }
     public void setSession(Session session) {
         this.session = session;
     }

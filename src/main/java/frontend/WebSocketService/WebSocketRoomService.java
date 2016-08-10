@@ -8,6 +8,7 @@ import frontend.WebSocketServlets.RoomWebSocket;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,24 +21,35 @@ public class WebSocketRoomService implements WebSocketService {
     private Map<Integer, GameRoom> gameRooms = new ConcurrentHashMap<>();//карта с комнатами
 
     public GameRoom createRoom(User creator) {
+        if (creator.getRoomId() != null) {
+            quitRoom(creator, creator.getRoomId());
+        }
         List<User> userList = new ArrayList<>();
         userList.add(creator);
         Integer roomId = IdSingleton.getNewId();
-        GameRoom room = new GameRoom(userList, roomId);
+        GameRoom room = new GameRoom(userList, roomId, creator);
+        creator.setRoomId(roomId);
         gameRooms.put(roomId, room);
         return room;
     }
 
-    public void deleteRoom(Integer id) {
-        gameRooms.remove(id);
-    }
-
     public void joinRoom(User user, Integer roomId) {
-        gameRooms.get(roomId).getUsers().add(user);
+        if (user.getRoomId() != null) {
+            this.quitRoom(user,user.getRoomId());
+        }
+        user.setRoomId(roomId);
+        if (gameRooms.get(roomId) != null) {
+            gameRooms.get(roomId).getUsers().add(user);
+        }
+
     }
 
     public void quitRoom(User user, Integer roomId) {
+        user.setRoomId(null);
         gameRooms.get(roomId).getUsers().remove(user);
+        if (gameRooms.get(roomId).getUsers().isEmpty()) {
+            //gameRooms.remove(roomId);
+        }
     }
 
     public JSONObject getRoomsJson() {

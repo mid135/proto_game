@@ -7,14 +7,18 @@ import org.json.simple.JSONObject;
  */
 
 public interface User {
+    JSONObject toJson();
+
+    boolean checkPassword(String password);
+
     String getLogin();
 
     String getEmail();
 
+    Integer getRoomId();
+
     void setEmail(String email);
 
-    public JSONObject toJson();
-
-    boolean checkPassword(String password);
+    void setRoomId(Integer roomId);
 
 }

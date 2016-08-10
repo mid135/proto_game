@@ -12,15 +12,14 @@ import java.util.List;
  * Created by mid-s on 15.07.16.
  */
 public class GameRoom {
-    List<User> gameUserList = new ArrayList<>();
     private Integer roomId;
+    private User creator;
+    List<User> gameUserList = new ArrayList<>();
 
-    public List<User> getUsers() {
-        return gameUserList;
-    }
-
-    public Integer getRoomId() {
-        return roomId;
+    public GameRoom(List<User> gameUserList, Integer roomId, User creator) {
+        this.roomId = roomId;
+        this.gameUserList = gameUserList;
+        this.creator = creator;
     }
 
     public JSONObject toJson() {
@@ -33,10 +32,16 @@ public class GameRoom {
         return jsonObject;
     }
 
-    public GameRoom(List<User> gameUserList, Integer roomId) {
-        this.roomId = roomId;
-        this.gameUserList = gameUserList;
+    public List<User> getUsers() {
+        return gameUserList;
+    }
 
+    public User getCreator() {
+        return creator;
+    }
+
+    public Integer getRoomId() {
+        return roomId;
     }
 
 }

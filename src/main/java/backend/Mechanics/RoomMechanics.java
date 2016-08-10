@@ -38,10 +38,10 @@ public class RoomMechanics extends Thread {
 
     private void rmStep() {
         //комнаты нужно все один раз преобразовать а потом всем отослать одинаковый результат
-        JSONObject rooms = webSocketRoomService.getRoomsJson();
-        System.out.println(rooms.toJSONString());
+        String rooms = webSocketRoomService.getRoomsJson().toJSONString();
+        System.out.println(rooms);
         for (Map.Entry<User, RoomWebSocket> entry : webSocketRoomService.getRoomSockets().entrySet()) {
-            entry.getValue().sendMessage(rooms.toJSONString());
+            entry.getValue().sendMessage(rooms);
         }
     }
 }

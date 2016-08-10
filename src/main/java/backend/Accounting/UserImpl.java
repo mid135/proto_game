@@ -15,6 +15,7 @@ public class UserImpl implements User {
     private String login;
     private String password;
     private String email;
+    private Integer roomId;//current room id
 
     @Override
     public boolean equals(Object o) {
@@ -51,6 +52,14 @@ public class UserImpl implements User {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    public Integer getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Integer roomId) {
+        this.roomId = roomId;
     }
 
     public String getLogin() {
