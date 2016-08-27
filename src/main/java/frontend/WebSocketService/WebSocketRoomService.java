@@ -52,6 +52,10 @@ public class WebSocketRoomService implements WebSocketService {
         }
     }
 
+    public void startGame(User user, Integer roomId) {
+        //нужно как-то передать информацию в поток с гейммеханикой для инициализации
+    }
+
     public JSONObject getRoomsJson() {
         JSONObject rooms = new JSONObject();
         for (Map.Entry<Integer,GameRoom> entry: gameRooms.entrySet()) {

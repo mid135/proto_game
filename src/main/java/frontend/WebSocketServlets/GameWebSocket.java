@@ -41,20 +41,6 @@ public class GameWebSocket {
         return user;
     }
 
-    public JSONObject toJson() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name", user.getLogin());
-        jsonObject.put("email", user.getEmail());
-        return jsonObject;
-    }
-
-    public void startGame(GameWebSocket user) {
-
-    }
-
-    public void gameOver(String myName, int myScore, String oponentName, int oponentScore) {
-
-    }
 
     @OnWebSocketMessage
     public void onMessage(String data) throws JSONException {
@@ -70,6 +56,7 @@ public class GameWebSocket {
         } catch (Exception e) {
 
         }
+        
 
     }
 
@@ -77,6 +64,7 @@ public class GameWebSocket {
     public void onOpen(Session session) throws JSONException {
         setSession(session);
         webSocketGameService.addUser(this);
+
         //gameMechanics.addUser(user);
     }
 

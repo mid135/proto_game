@@ -57,6 +57,9 @@ public class RoomWebSocket {
             webSocketRoomService.joinRoom(user, Integer.valueOf(inputJSON.get("roomId").toString()));
         } else if (inputJSON.get("action").equals("quit")) {
             webSocketRoomService.quitRoom(user, Integer.valueOf(inputJSON.get("roomId").toString()));
+        } else if (inputJSON.get("action").equals("start")) {
+            //game starts without any checks
+            webSocketRoomService.startGame(user, Integer.valueOf(inputJSON.get("roomId").toString()));
         } else {
             //TODO log fail action
         }
