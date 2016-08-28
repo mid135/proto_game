@@ -3,6 +3,7 @@ package backend.Mechanics;
 import backend.User;
 import frontend.WebSocketServlets.GameWebSocket;
 import frontend.WebSocketServlets.RoomWebSocket;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -14,21 +15,25 @@ import java.util.List;
 public class GameRoom {
     private Integer roomId;
     private User creator;
-    List<User> gameUserList = new ArrayList<>();
+    private String roomName;
 
-    public GameRoom(List<User> gameUserList, Integer roomId, User creator) {
+    List<User> gameUserList = new ArrayList<>();
+    public GameRoom(List<User> gameUserList, Integer roomId, User creator, String roomName) {
         this.roomId = roomId;
         this.gameUserList = gameUserList;
         this.creator = creator;
+        this.roomName = roomName;
     }
 
     public JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();
-        Integer i = 0;
+        jsonObject.put("roomId",roomId.toString());
+        jsonObject.put("roomName",roomName);
+        JSONObject players = new JSONObject();
         for (User user: gameUserList) {
-            jsonObject.put(user.getLogin(), user.toJson());
-            i++;
+            players.put(user.getLogin(), user.toJson());
         }
+        jsonObject.put("players",players);
         return jsonObject;
     }
 
@@ -42,6 +47,14 @@ public class GameRoom {
 
     public Integer getRoomId() {
         return roomId;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
 
 }

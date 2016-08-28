@@ -21,4 +21,6 @@ public interface User {
 
     void setRoomId(Integer roomId);
 
+    Integer getUserId();
+
 }

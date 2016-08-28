@@ -47,7 +47,7 @@ public class Main {
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
-        resource_handler.setResourceBase("/home/mid-s/java project/proto_game_front");
+        resource_handler.setResourceBase("/home/mid-s/js_project/proto_game_front");
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[]{resource_handler, context});
 

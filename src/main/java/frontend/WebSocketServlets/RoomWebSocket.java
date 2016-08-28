@@ -52,11 +52,14 @@ public class RoomWebSocket {
         }
 
         if (inputJSON.get("action").equals("create")) {
-            webSocketRoomService.createRoom(user);
+            webSocketRoomService.createRoom(user,"name" /*inputJSON.get("roomName").toString()*/);
         } else if (inputJSON.get("action").equals("join")) {
             webSocketRoomService.joinRoom(user, Integer.valueOf(inputJSON.get("roomId").toString()));
         } else if (inputJSON.get("action").equals("quit")) {
             webSocketRoomService.quitRoom(user, Integer.valueOf(inputJSON.get("roomId").toString()));
+        } else if (inputJSON.get("action").equals("start")) {
+            //game starts without any checks
+            webSocketRoomService.startGame(user, Integer.valueOf(inputJSON.get("roomId").toString()));
         } else {
             //TODO log fail action
         }

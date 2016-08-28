@@ -5,6 +5,7 @@ import backend.Mechanics.GameRoom;
 import backend.User;
 import frontend.WebSocketServlets.GameWebSocket;
 import frontend.WebSocketServlets.RoomWebSocket;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -20,14 +21,14 @@ public class WebSocketRoomService implements WebSocketService {
     private Map<User, RoomWebSocket> roomSockets = new ConcurrentHashMap<>();//конекты на получение состояний комнат
     private Map<Integer, GameRoom> gameRooms = new ConcurrentHashMap<>();//карта с комнатами
 
-    public GameRoom createRoom(User creator) {
+    public GameRoom createRoom(User creator, String roomName) {
         if (creator.getRoomId() != null) {
             quitRoom(creator, creator.getRoomId());
         }
         List<User> userList = new ArrayList<>();
         userList.add(creator);
         Integer roomId = IdSingleton.getNewId();
-        GameRoom room = new GameRoom(userList, roomId, creator);
+        GameRoom room = new GameRoom(userList, roomId, creator, roomName);
         creator.setRoomId(roomId);
         gameRooms.put(roomId, room);
         return room;
@@ -46,18 +47,25 @@ public class WebSocketRoomService implements WebSocketService {
 
     public void quitRoom(User user, Integer roomId) {
         user.setRoomId(null);
-        gameRooms.get(roomId).getUsers().remove(user);
-        if (gameRooms.get(roomId).getUsers().isEmpty()) {
-            //gameRooms.remove(roomId);
+        if (gameRooms.get(roomId) != null && gameRooms.get(roomId).getUsers() != null) {
+            gameRooms.get(roomId).getUsers().remove(user);
+            if (gameRooms.get(roomId).getUsers().isEmpty()) {
+                //gameRooms.remove(roomId);
+            }
         }
     }
 
-    public JSONObject getRoomsJson() {
-        JSONObject rooms = new JSONObject();
+    public void startGame(User user, Integer roomId) {
+        //нужно как-то передать информацию в поток с гейммеханикой для инициализации
+        //TODO implement observer
+    }
+
+    public JSONArray getRoomsJson() {
+        JSONArray jsonArray = new JSONArray();
         for (Map.Entry<Integer,GameRoom> entry: gameRooms.entrySet()) {
-            rooms.put(entry.getKey().toString(), entry.getValue().toJson());
+            jsonArray.add(entry.getValue().toJson());
         }
-        return rooms;
+        return jsonArray;
     }
     /**
      * добавить сокет в список рассылки состояний комнат
